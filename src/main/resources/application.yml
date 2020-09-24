@@ -1,0 +1,38 @@
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+  client:
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+#        defaultZone: http://zjs:zjsmicro@10.10.131.64:8761/eureka/,http://zjs:zjsmicro@10.10.131.65:8761/eureka/,http://zjs:zjsmicro@10.10.131.66:8761/eureka/
+      defaultZone: http://10.10.7.67:8761/eureka/
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+spring:
+  boot:
+    admin:
+      discovery:
+        converter:
+          health-endpoint-path: /
+          management-context-path: /
+#        services: hades-ar-sync
+      ui:
+#        public-url: http://servicemoniter.zjs.com.cn:80/
+        title: 微服务状态监控
+        brand: "<img src=\"assets/img/icon-spring-boot-admin.svg\"><span>微服务状态监控</span>"
+      probed-endpoints: [ "health", "info" ]
+
+  security:
+    user:
+      name: test
+      password: test
+server:
+  port: 8081
+
+WebhookUrl: https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=8e2dd46d-b437-4e51-aea3-a8b41db0c81f

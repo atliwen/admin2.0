@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.7.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.example</groupId>
+    <artifactId>admin2</artifactId>
+    <version>0.0.1</version>
+    <packaging>jar</packaging>
+    <name>admin2</name>
+    <description>Demo project for Spring Boot</description>
+    <properties>
+        <java.version>1.8</java.version>
+        <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
+    </properties>
+
+    <dependencies>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-server</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <!--至少要使用1.0以后的版本 建议很实用最新的1.2.0-->
+                <version>1.2.2</version>
+                <configuration>
+                    <!--用户ID-->
+                    <serverId>docker</serverId>
+                    <!--镜像项目目录-->
+                    <registryUrl>https://hb.zjs.com.cn/atliwen/</registryUrl>
+                    <!--公开的安装有docker的服务器，2375 端口权限开放后可以进行远程超做，用于上传jar包和Dockerfile文件-->
+                    <dockerHost>http://10.10.6.50:2375</dockerHost>
+                    <!--镜像名称  注意 /edi/  这个路径是 镜像目录  请设置对应的镜像目录-->
+                    <imageName>hbt.zjs.com.cn/atliwen/${project.artifactId}:${project.version}</imageName>
+                    <!--修改过时间轴为上海区域的java 基础镜像-->
+                    <baseImage>hb.zjs.com.cn/base/openjdk:8u232-jre-alpine</baseImage>
+                    <!--当前镜像版本的描述-->
+                    <maintainer>李文 - ${project.description}</maintainer>
+                    <!--<volumes>/tmp</volumes>-->
+                    <entryPoint>["sh","-c","exec java -jar /${project.build.finalName}.jar"]</entryPoint>
+                    <!--                    <entryPoint>["java","-Xmx1024m","-jar", "/${project.build.finalName}.jar"]</entryPoint>-->
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
