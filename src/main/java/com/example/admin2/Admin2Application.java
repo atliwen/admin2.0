@@ -26,11 +26,14 @@ public class Admin2Application
         return new WeChatNews();
     }
 
+    //@Bean
+    //public ServiceInstanceConverter serviceInstanceConverter() {
+    //    return new ServiceInstanceConverter();
+    //}
     @Bean
     public WeChatNotifier customNotifier(InstanceRepository repository, WeChatNews news) {
         return new WeChatNotifier(repository, news);
     }
-
 
     @Configuration
     public static class SecurityConfig extends WebSecurityConfigurerAdapter
@@ -38,23 +41,9 @@ public class Admin2Application
         @Override
         protected void configure(HttpSecurity http) throws Exception {
 
-            // Page with login form is served as /login.html and does a POST on /login
-            //http.formLogin().loginPage("/login.html").loginProcessingUrl("/login").permitAll();
-            //// The UI does a POST on /logout on logout
-            //http.logout().logoutUrl("/logout");
-            //// The ui currently doesn't support csrf
-            //http.csrf().disable();
-            //http.csrf()
-            //        .ignoringAntMatchers("/**");
-            //// Requests for the login page and the static assets are allowed
-            //http.authorizeRequests()
-            //        .antMatchers("/login.html", "/**/*.css", "/img/**", "/third-party/**")
-            //        .permitAll();
-            //// ... and any other request needs to be authorized
-            //http.authorizeRequests().antMatchers("/**").authenticated();
-            //
-            //// Enable so that the clients can authenticate via HTTP basic for registering
-            //http.httpBasic();
+            http.authorizeRequests().anyRequest().permitAll()
+                    .and().csrf().disable();
+
         }
     }
 

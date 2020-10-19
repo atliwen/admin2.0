@@ -10,10 +10,7 @@ import de.codecentric.boot.admin.server.domain.events.InstanceStatusChangedEvent
 import de.codecentric.boot.admin.server.domain.values.Registration;
 import de.codecentric.boot.admin.server.domain.values.StatusInfo;
 import de.codecentric.boot.admin.server.notify.AbstractStatusChangeNotifier;
-import de.codecentric.boot.admin.server.notify.LoggingNotifier;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -29,7 +26,7 @@ import java.util.Map;
 public class WeChatNotifier extends AbstractStatusChangeNotifier
 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingNotifier.class);
+    //private static final Logger LOGGER = LoggerFactory.getLogger(LoggingNotifier.class);
 
     public WeChatNotifier(InstanceRepository repository, WeChatNews news) {
         super(repository);
@@ -48,27 +45,30 @@ public class WeChatNotifier extends AbstractStatusChangeNotifier
                 Registration registration = instance.getRegistration();
                 StatusInfo statusInfo = ((InstanceStatusChangedEvent) event).getStatusInfo();
                 String status = statusInfo.getStatus();
+                String s;
                 switch (status) {
                     // 健康检查没通过
                     case "DOWN":
-                        String s = down(statusInfo);
-                        news.postForEntity(registration.getName(), "异常", registration.getServiceUrl().substring(7), s);
+                        news.postForEntity(registration.getName(), "异常",
+                                registration.getServiceUrl().substring(7),
+                                down(statusInfo));
                         break;
-                    // 服务离线
-                    //case "OFFLINE":
-                    //    news.postForEntity(registration.getName(), "服务离线", registration.getServiceUrl().substring(7), null);
-                    //    System.out.println("发送 服务离线 的通知！");
-                    //    break;
-                    ////服务上线
-                    //case "UP":
-                    //    news.postForEntity(registration.getName(), "服务上线", registration.getServiceUrl().substring(7), null);
-                    //    System.out.println("发送 服务上线 的通知！");
-                    //    break;
-                    //// 服务未知异常
-                    //case "UNKNOWN":
-                    //    news.postForEntity(registration.getName(), "无法访问", registration.getServiceUrl().substring(7), null);
-                    //    System.out.println("发送 服务未知异常 的通知！");
-                    //    break;
+                    //服务离线
+                    case "OFFLINE":
+                        news.postForEntity(registration.getName(), "离线",
+                                registration.getServiceUrl().substring(7),
+                                getString(statusInfo.getDetails()));
+                        break;
+                    //服务上线
+                    case "UP":
+                        news.postForEntity(registration.getName(), "上线", registration.getServiceUrl().substring(7), "服务上线");
+                        break;
+                    // 服务未知异常
+                    case "UNKNOWN":
+                        news.postForEntity(registration.getName(), "未知状态",
+                                registration.getServiceUrl().substring(7),
+                                getString(statusInfo.getDetails()));
+                        break;
                     default:
                         break;
                 }
@@ -91,18 +91,23 @@ public class WeChatNotifier extends AbstractStatusChangeNotifier
             } catch (Exception ignored) {
 
             }
-            System.out.println(e.getKey() + "  " + e.getValue());
+            //System.out.println(e.getKey() + "  " + e.getValue());
         }
         o.enable(SerializationFeature.INDENT_OUTPUT);
+        String st = getString(a);
+        //context.setVariable("json", st);
+        //return text.getValue(context, String.class);
+
+        return st;
+    }
+
+    private String getString(Map<String, Object> a) {
         String st = null;
         try {
             st = StringEscapeUtils.escapeJava(o.writeValueAsString(a));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        //context.setVariable("json", st);
-        //return text.getValue(context, String.class);
-
         return st;
     }
 

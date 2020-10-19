@@ -1,16 +1,19 @@
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 10
+    prefer-ip-address: true
   client:
     registryFetchIntervalSeconds: 5
     serviceUrl:
 #        defaultZone: http://zjs:zjsmicro@10.10.131.64:8761/eureka/,http://zjs:zjsmicro@10.10.131.65:8761/eureka/,http://zjs:zjsmicro@10.10.131.66:8761/eureka/
-      defaultZone: http://10.10.7.67:8761/eureka/
+#      defaultZone: http://10.10.7.67:8761/eureka/
+      defaultZone: http://10.10.6.93:8761/eureka/
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+      base-path: /
   endpoint:
     health:
       show-details: always
@@ -19,20 +22,29 @@ spring:
     admin:
       discovery:
         converter:
-          health-endpoint-path: /
-          management-context-path: /
-#        services: hades-ar-sync
+          health-endpoint-path: '/health'
+          management-context-path: '/'
+      #        ignored-services: hades-*,discovery,spring-cloud-zipkin,spring-cloud-*,unknown,aladin-hbase,wms-*,gateway-*
+#        services: ServiceStatusMonitoring
       ui:
 #        public-url: http://servicemoniter.zjs.com.cn:80/
         title: 微服务状态监控
         brand: "<img src=\"assets/img/icon-spring-boot-admin.svg\"><span>微服务状态监控</span>"
-      probed-endpoints: [ "health", "info" ]
-
-  security:
-    user:
-      name: test
-      password: test
+      probed-endpoints: [ "health", "info","loggers","logfile" ]
+  application:
+    name: ServiceStatusMonitoring
 server:
   port: 8081
 
+# spring.boot.admin.discovery.ignored-services=hades-*,discovery,spring-cloud-zipkin,spring-cloud-*,unknown,aladin-hbase,wms-*,gateway-*
+
 WebhookUrl: https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=8e2dd46d-b437-4e51-aea3-a8b41db0c81f
+logging:
+  level:
+    root: info
+info:
+  contact:
+    appName: ServiceStatusMonitoring
+    author: 258083
+    introduce: 微服务状态感知服务
+

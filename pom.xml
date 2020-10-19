@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.example</groupId>
     <artifactId>admin2</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.6</version>
     <packaging>jar</packaging>
     <name>admin2</name>
     <description>Demo project for Spring Boot</description>
@@ -29,7 +29,13 @@
         <dependency>
             <groupId>de.codecentric</groupId>
             <artifactId>spring-boot-admin-starter-server</artifactId>
-            <version>2.2.4</version>
+            <version>2.3.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-security</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -43,6 +49,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
 
 
@@ -90,7 +102,7 @@
                     <!--公开的安装有docker的服务器，2375 端口权限开放后可以进行远程超做，用于上传jar包和Dockerfile文件-->
                     <dockerHost>http://10.10.6.50:2375</dockerHost>
                     <!--镜像名称  注意 /edi/  这个路径是 镜像目录  请设置对应的镜像目录-->
-                    <imageName>hbt.zjs.com.cn/atliwen/${project.artifactId}:${project.version}</imageName>
+                    <imageName>hb.zjs.com.cn/atliwen/${project.artifactId}:${project.version}</imageName>
                     <!--修改过时间轴为上海区域的java 基础镜像-->
                     <baseImage>hb.zjs.com.cn/base/openjdk:8u232-jre-alpine</baseImage>
                     <!--当前镜像版本的描述-->

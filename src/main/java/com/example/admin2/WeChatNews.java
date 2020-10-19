@@ -30,8 +30,8 @@ public class WeChatNews
     static String down = "{\n" +
             "    \"msgtype\": \"markdown\",\n" +
             "    \"markdown\": {\n" +
-            "        \"content\": \"## #{#status} #{#name} \\n\n" +
-            "### #{#url}  \\n\n" +
+            "        \"content\": \"#### #{#status} #{#name} \\n\n" +
+            "##### #{#url}  \\n\n" +
             "~~~\n" +
             "#{#data}\n" +
             "~~~\"\n" +
